@@ -18,11 +18,14 @@ class TNavController extends Controller
 		$feed = [];
 		if(count($parsed)>0){
 			$feed = $parsed['channel']['item'];
+			TNav::truncate();
 			for($i=0; $i<count($feed); $i++){
 				$tnav_entry = new TNav;
 				$road = explode('-', $feed[$i]['title']);
-				$tnav_entry->road1 = $road[0];
-				$tnav_entry->road2 = $road[1];
+				$road1 = str_replace('_', ' ', $road[0]);
+				$road2 = str_replace('_', ' ', $road[1]);
+				$tnav_entry->road1 = $road1;
+				$tnav_entry->road2 = $road2;
 				$tnav_entry->way = $road[count($road)-1];
 				$tnav_entry->description = $feed[$i]['description'];
 				$tnav_entry->pubDate = $feed[$i]['pubDate'];
@@ -33,5 +36,18 @@ class TNavController extends Controller
 		else{
 			echo 'Parsing failed';
 		}
+    }
+
+    public function getUpdate($r){
+    	$route = TNav::where('road1', $r)->get();
+    	$result = "MMDA TRAFFIC AT ".strtoupper($r).'<br/><br/>';
+    	foreach($route as $r){
+    		$result .= strtoupper($r->road2).' ';
+    		$result .= ($r->way=="SB")? "SOUTHBOUND<br/>" : "NORTHBOUND<br/>";
+    		$result .= "As of ".$r->pubDate.": ";
+    		$result .= ($r->description=="L")? "Light Traffic" : (($r->description=="ML")? "Moderate Traffic" : "Heavy Traffic");
+    		$result .= "<br/><br/>";
+    	}
+    	return $result;
     }
 }

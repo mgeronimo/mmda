@@ -15,3 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/mmda', 'TNavController@index');
+Route::get('/getUpdate/{route}', 'TNavController@getUpdate');
