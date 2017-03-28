@@ -39,12 +39,25 @@ class TNavController extends Controller
     }
 
     public function getUpdate($r){
-    	$route = TNav::where('road1', $r)->get();
+    	$route = TNav::where('road1', $r)->groupBy('road2', 'way')->get();
     	$result = "MMDA TRAFFIC AT ".strtoupper($r).'<br/><br/>';
     	foreach($route as $r){
     		$result .= strtoupper($r->road2).' ';
-    		$result .= ($r->way=="SB")? "SOUTHBOUND<br/>" : "NORTHBOUND<br/>";
-    		$result .= "As of ".$r->pubDate.": ";
+    		$result .= ($r->way=="SB")? "SOUTHBOUND" : "NORTHBOUND";
+    		$result .= " as of ".$r->pubDate.": <br/>";
+    		$result .= ($r->description=="L")? "Light Traffic" : (($r->description=="ML")? "Moderate Traffic" : "Heavy Traffic");
+    		$result .= "<br/><br/>";
+    	}
+    	return $result;
+    }
+
+    public function getTrafficUpdate($r){
+    	$route = TNav::where('road2', $r)->groupBy('road2', 'way')->get();
+    	$result = "MMDA TRAFFIC AT ".strtoupper($r).'<br/><br/>';
+    	foreach($route as $r){
+    		$result .= strtoupper($r->road2).' ';
+    		$result .= ($r->way=="SB")? "SOUTHBOUND" : "NORTHBOUND";
+    		$result .= " as of ".$r->pubDate.": <br/>";
     		$result .= ($r->description=="L")? "Light Traffic" : (($r->description=="ML")? "Moderate Traffic" : "Heavy Traffic");
     		$result .= "<br/><br/>";
     	}

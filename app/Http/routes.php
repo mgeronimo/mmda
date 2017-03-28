@@ -14,5 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/mmda', 'TNavController@index');
-Route::get('/getUpdate/{route}', 'TNavController@getUpdate');
+Route::get('/mmda', 'TNavController@index'); //updates the result
+Route::get('/getUpdate/{route}', 'TNavController@getUpdate'); //for major roads
+
+// for minor roads
+Route::get('/getTrafficUpdate/{route}', 'TNavController@getTrafficUpdate');
